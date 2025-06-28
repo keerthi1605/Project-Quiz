@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Human Rights Policy Quiz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background-color: #fff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header .menu {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .header .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .main {
+      display: flex;
+      flex-wrap: wrap;
+      min-height: calc(100vh - 60px);
+    }
+
+    .left-panel {
+      width: 40vw;
+      padding: 30px;
+      background-color: #d9d9d9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-panel {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+      overflow: hidden;
+      background-color: #e0f7fa;
+      min-height: 500px;
+    }
+
+    .mountain-img {
+      width: 100%;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .coin {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      z-index: 3;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease;
+    }
+
+    .coin1 {
+      top: 68%;
+      left: 39%;
+      transform: translate(-50%, -50%);
+    }
+
+    .coin2 {
+      top: 79%;
+      left: 27%;
+      transform: translate(-50%, -50%);
+    }
+
+    .cloud {
+      position: absolute;
+      width: 120px;
+      z-index: 3;
+    }
+
+    .cloud1 {
+      top: 17%;
+      height: 80px;
+      width: 250px;
+      left: -230px;
+      animation: cloudSlideInLeft 2s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+
+    .cloud2 {
+      top: 8%;
+      right: -120px;
+      animation: cloudSlideInRight 2s ease-out forwards;
+      animation-delay: 0.8s;
+    }
+
+    .cloudBig {
+      top: 83%;
+      height: 110px;
+      width: 780px;
+      animation: cloudSlideInRight 2s ease-out forwards;
+    }
+
+    @keyframes cloudSlideInLeft {
+      from { left: -220px; }
+      to { left: 0.3%; }
+    }
+
+    @keyframes cloudSlideInRight {
+      from { right: -120px; }
+      to { right: 0%; }
+    }
+
+    .question {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      margin-top: 20px;
+    }
+
+    .option {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .option:hover {
+      background-color: #e0e0e0;
+      transform: scale(1.01);
+    }
+
+    .option input {
+      margin-right: 10px;
+    }
+
+    .submit-btn {
+      background-color: #bbb;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      margin-top: 30px;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #999;
+      transform: translateY(-2px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      width: 70px;
+    }
+
+    .stickman {
+      position: absolute;
+      bottom: 100px;
+      left: 100px;
+      width: 60px;
+      z-index: 2;
+      transition: all 2s ease-in-out;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background-color: #ddd;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4CAF50;
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    @keyframes coinJump {
+      0% { transform: translate(-50%, -50%) rotateY(0); }
+      50% { transform: translate(-50%, -150%) rotateY(180deg); }
+      100% { transform: translate(-50%, -50%) rotateY(360deg); }
+    }
+
+    .jump-rotate {
+      animation: coinJump 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+      }
+
+      .left-panel,
+      .right-panel {
+        width: 100%;
+      }
+
+      .stickman {
+        left: 50px !important;
+        bottom: 80px !important;
+        width: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">
+      <img src="logo2.PNG" class="logo-img" alt="Logo">
+    </div>
+    <div class="menu">☰ Human Rights Policy</div>
+    <div class="nav-links">
+      <div>HELP</div>
+      <div>RESOURCES</div>
+      <div>EXIT</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="left-panel">
+      <div class="question-container">
+        <div class="question" id="question"></div>
+      </div>
+
+      <div class="options" id="options"></div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <button class="submit-btn" id="submit-btn">Submit</button>
+      <button class="submit-btn" id="hint-btn">💡 Hint</button>
+      <div id="hint-box" style="margin-top: 15px; font-style: italic; color: #333;"></div>
+
+    </div>
+
+
+    <div class="right-panel">
+      <img src="mountains3.PNG" alt="Mountain" class="mountain-img" />
+      <img src="stickman.png" alt="Stickman" class="stickman" id="stickman" />
+      <img src="coin.png" alt="Coin" class="coin coin1" />
+      <img src="coin.png" alt="Coin" class="coin coin2" />
+      <img src="cloud1.png" alt="Cloud Left" class="cloud cloud1" />
+      <img src="cloud2.png" alt="Cloud Right" class="cloud cloud2" />
+      <img src="bigcloud.png" alt="Cloud Big" class="cloud cloudBig" />
+    </div>
+  </div>  
+
+   <script>
+    const coins = document.querySelectorAll('.coin');
+    const submitBtn = document.getElementById('submit-btn');
+    const hintBtn = document.getElementById('hint-btn');
+    const hintBox = document.getElementById('hint-box');
+    const stickman = document.getElementById('stickman');
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const progressBar = document.getElementById('progress-bar');
+
+    const questions = [
+      {
+        question: "Which of the following is NOT a fundamental principle of human rights?",
+        options: ["Universality", "Inalienability", "Indivisibility", "Profitability"],
+        correctIndex: 3
+      },
+      {
+        question: "Which one of the following is NOT considered a best practice for a company that is working to prevent child labor?",
+        options: [
+          "Follow national labor laws on minimum age and adhere to international standards where necessary.",
+          "Use adequate and verifiable mechanisms for age verification during recruitment.",
+          "Do not maintain accurate and up-to-date records of all employees.",
+          "Influence subcontractors, suppliers, and other business partners to combat child labor."
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "What is the primary purpose of the Universal Declaration of Human Rights?",
+        options: [
+          "To establish a global government",
+          "To provide a common standard of achievements for all peoples and all nations",
+          "To enforce economic sanctions on non-compliant countries",
+          "To replace all national laws with international standards"
+        ],
+        correctIndex: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let selectedIndex = -1;
+    let correctAnswers = 0;
+
+    const movements = [
+      { x: 70, y: 150 },
+      { x: 80, y: 65 },
+      { x: 110, y: 80 }
+    ];
+
+    function loadQuestion() {
+      hintBox.innerText = ""; // Clear hint when loading new question
+      const q = questions[currentQuestion];
+      questionElement.innerHTML = `<strong>${q.question}</strong><p style="font-size: 14px; margin-top: 10px;">🖱️ Select the correct option and then select <strong>Submit</strong>.</p>`;
+      optionsElement.innerHTML = '';
+      q.options.forEach((option, index) => {
+        const optionElement = document.createElement('label');
+        optionElement.className = 'option';
+        optionElement.innerHTML = `
+          <input type="radio" name="q" value="${index}" />
+          ${option}
+        `;
+        optionsElement.appendChild(optionElement);
+      });
+      selectedIndex = -1;
+      stickman.src = "stickman.png";
+    }
+
+    coins.forEach(coin => {
+      coin.addEventListener('click', () => coin.classList.add('jump-rotate'));
+      coin.addEventListener('animationend', () => coin.classList.remove('jump-rotate'));
+    });
+
+    optionsElement.addEventListener('change', (e) => {
+      if (e.target.name === 'q') {
+        hintBox.innerText = ""; // Clear hint when selecting new option
+        selectedIndex = parseInt(e.target.value);
+        stickman.src = "stickman.png";
+      }
+    });
+
+    submitBtn.addEventListener('click', () => {
+      if (selectedIndex === -1) {
+        alert("Please select an option!");
+        return;
+      }
+
+      hintBox.innerText = ""; // Clear hint when submitting answer
+
+      const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
+
+      if (isCorrect) {
+        correctAnswers++;
+        progressBar.style.width = `${(correctAnswers / questions.length) * 100}%`;
+
+        if (currentQuestion < movements.length) {
+          const move = movements[currentQuestion];
+          const currentLeft = parseFloat(getComputedStyle(stickman).left);
+          const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
+          stickman.style.left = `${currentLeft + move.x}px`;
+          stickman.style.bottom = `${currentBottom + move.y}px`;
+        }
+
+        setTimeout(() => {
+          if (correctAnswers === 2) {
+            const coin2 = document.querySelector('.coin2');
+            coin2.style.transition = "top 1s ease";
+            coin2.style.top = "55%";
+          }
+          if (correctAnswers === 3) {
+            const coin1 = document.querySelector('.coin1');
+            coin1.style.transition = "top 1s ease";
+            coin1.style.top = "42%";
+          }
+        }, 1000);
+
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          setTimeout(loadQuestion, 1500);
+        } else {
+          setTimeout(() => {
+            questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
+            optionsElement.innerHTML = '';
+            submitBtn.style.display = 'none';
+            hintBtn.style.display = 'none'; // Also hide hint button at end
+          }, 1500);
+        }
+      } else {
+        stickman.src = "stickmanRed.png";
+        setTimeout(() => {
+          alert("Oops! That's not the correct answer. Please try again.");
+        }, 300);
+      }
+    });
+
+    hintBtn.addEventListener('click', async () => {
+      const questionText = questions[currentQuestion].question;
+      hintBox.innerText = "Thinking... 🤔";
+
+      try {
+        const response = await fetch('http://localhost:3000/api/hint', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ question: questionText })
+        });
+
+        const data = await response.json();
+        hintBox.innerText = data.hint;
+      } catch (error) {
+        hintBox.innerText = "Error generating hint. Is the AI server running?";
+        console.error(error);
+      }
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+
+
+

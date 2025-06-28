@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slow Coin Animation</title>
+  <style>
+    .up {
+      margin-top: 200px;
+      margin-left: 200px;
+    }
+    
+    img {
+      cursor: pointer;
+      transition: transform 2s ease;
+      transform-style: preserve-3d;
+    }
+    
+    @keyframes coinJump {
+      0% {
+        transform: translateY(0) rotateY(0);
+      }
+      30% {
+        transform: translateY(-80px) rotateY(360deg);
+      }
+      70% {
+        transform: translateY(-40px) rotateY(720deg);
+      }
+      100% {
+        transform: translateY(0) rotateY(1080deg);
+      }
+    }
+    
+    .jump-rotate {
+      animation: coinJump 2.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+  </style>
+</head>
+<body>
+  <div class="up"></div>
+  <img src="coin.png" id="coin" alt="Coin" width="100">
+  
+  <script>
+    const coin = document.getElementById('coin');
+    
+    coin.addEventListener('click', function() {
+      // Reset animation
+      coin.style.animation = 'none';
+      void coin.offsetWidth; // Trigger reflow
+      coin.style.animation = null;
+      
+      // Add animation class
+      coin.classList.add('jump-rotate');
+    });
+    
+    // Remove the animation class after it completes
+    coin.addEventListener('animationend', function() {
+      coin.classList.remove('jump-rotate');
+    });
+  </script>
+</body>
+</html>
