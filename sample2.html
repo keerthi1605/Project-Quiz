@@ -54,25 +54,27 @@
 
     .right-panel {
       flex: 1;
-      height: 100px;
       min-width: 300px;
       position: relative;
       overflow: hidden;
-      height: 630px;
+      height: 100vh;
     }
 
     .mountain-img {
       width: 100%;
-      display: block;
-      position: relative;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      bottom: 0;
       z-index: 1;
-      
     }
 
     .coin {
       position: absolute;
-      width: 50px;
-      height: 50px;
+      width: 5%;
+      max-width: 50px;
+      height: auto;
+      aspect-ratio: 1/1;
       z-index: 3;
       cursor: pointer;
       transform-style: preserve-3d;
@@ -93,46 +95,48 @@
 
     .cloud {
       position: absolute;
-      width: 120px;
       z-index: 3;
     }
 
     .cloud1 {
       top: 17%;
-      height: 80px;
-      width: 250px;
-      left: -230px;
+      height: 12%;
+      width: 35%;
+      left: -23%;
       animation: cloudSlideInLeft 2s ease-out forwards;
       animation-delay: 0.5s;
     }
 
     .cloud2 {
       top: 8%;
-      right: -120px;
+      right: -12%;
+      width: 12%;
       animation: cloudSlideInRight 2s ease-out forwards;
       animation-delay: 0.8s;
     }
 
     .cloudBig {
-      top: 500px;
-      height: 110px;
-      width: 880px;
+      top: 80%;
+      height: 23%;
+      width: 88%;
       animation: cloudSlideInRight 2s ease-out forwards;
     }
-    .white-space{
+    
+    .white-space {
+      position: absolute;
       bottom: 15%;
-      height: 1000px;
-      width: 800px;
+      height: 100%;
+      width: 80%;
       z-index: 1;
     }
 
     @keyframes cloudSlideInLeft {
-      from { left: -220px; }
+      from { left: -22%; }
       to { left: 0.3%; }
     }
 
     @keyframes cloudSlideInRight {
-      from { right: -120px; }
+      from { right: -12%; }
       to { right: 0%; }
     }
 
@@ -195,9 +199,10 @@
 
     .stickman {
       position: absolute;
-      bottom: 100px;
-      left: 100px;
-      width: 60px;
+      bottom: 10%;
+      left: 10%;
+      width: 6%;
+      max-width: 60px;
       z-index: 2;
       transition: all 2s ease-in-out;
     }
@@ -238,10 +243,18 @@
         width: 100%;
       }
 
+      .left-panel {
+        padding: 20px;
+      }
+
       .stickman {
-        left: 50px !important;
-        bottom: 80px !important;
-        width: 40px;
+        left: 5% !important;
+        bottom: 8% !important;
+        width: 8%;
+      }
+      
+      .coin {
+        width: 8%;
       }
     }
   </style>
@@ -284,10 +297,7 @@
       <img src="coin.png" alt="Coin" class="coin coin2" />
       <img src="cloud1.png" alt="Cloud Left" class="cloud cloud1" />
       <img src="cloud2.png" alt="Cloud Right" class="cloud cloud2" />
-      <img src="white.PNG" alt="Cloud space" class="white-space" />
       <img src="bigcloud.png" alt="Cloud Big" class="cloud cloudBig" />
-      
-      <img src="bigcloud.png" alt="Cloud Big2" class="other" />
     </div>
   </div>  
 
@@ -305,7 +315,8 @@
       {
         question: "Which of the following is NOT a fundamental principle of human rights?",
         options: ["Universality", "Inalienability", "Indivisibility", "Profitability"],
-        correctIndex: 3
+        correctIndex: 3,
+        hint: "When considering the fundamental principles of human rights, it's important to recall that these principles are generally accepted across cultures and societies. One helpful hint would be to eliminate the option that seems least related to the inherent rights, freedoms, and dignity of all individuals, without discrimination. This should lead you to the principle that is not a fundamental human right."
       },
       {
         question: "Which one of the following is NOT considered a best practice for a company that is working to prevent child labor?",
@@ -315,7 +326,8 @@
           "Do not maintain accurate and up-to-date records of all employees.",
           "Influence subcontractors, suppliers, and other business partners to combat child labor."
         ],
-        correctIndex: 2
+        correctIndex: 2,
+        hint: "One helpful hint could be: Consider the option that is not directly related to implementing stricter policies or regulations within the company itself. Remember, the focus is on preventing child labor."
       },
       {
         question: "What is the primary purpose of the Universal Declaration of Human Rights?",
@@ -325,7 +337,8 @@
           "To enforce economic sanctions on non-compliant countries",
           "To replace all national laws with international standards"
         ],
-        correctIndex: 1
+        correctIndex: 1,
+        hint: "The primary purpose of the Universal Declaration of Human Rights is to outline and establish fundamental human rights to be universally protected and promoted, ensuring dignity, equality, and freedom for all individuals, regardless of their nationality, gender, ethnicity, religion, or any other status."
       }
     ];
 
@@ -333,14 +346,15 @@
     let selectedIndex = -1;
     let correctAnswers = 0;
 
+    // Movement percentages based on viewport width/height
     const movements = [
-      { x: 70, y: 150 },
-      { x: 77, y: 65 },
-      { x: 115, y: 110 }
+      { x: 8, y: 25 },  // 7% of viewport width, 15% of viewport height
+      { x: 7.5, y: 15 },
+      { x: 8.5, y: 17 }
     ];
 
     function loadQuestion() {
-      hintBox.innerText = ""; // Clear hint when loading new question
+      hintBox.innerText = "";
       const q = questions[currentQuestion];
       questionElement.innerHTML = `<strong>${q.question}</strong><p style="font-size: 14px; margin-top: 10px;">🖱️ Select the correct option and then select <strong>Submit</strong>.</p>`;
       optionsElement.innerHTML = '';
@@ -364,7 +378,7 @@
 
     optionsElement.addEventListener('change', (e) => {
       if (e.target.name === 'q') {
-        hintBox.innerText = ""; // Clear hint when selecting new option
+        hintBox.innerText = "";
         selectedIndex = parseInt(e.target.value);
         stickman.src = "stickman.png";
       }
@@ -376,7 +390,7 @@
         return;
       }
 
-      hintBox.innerText = ""; // Clear hint when submitting answer
+      hintBox.innerText = "";
 
       const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
 
@@ -388,8 +402,15 @@
           const move = movements[currentQuestion];
           const currentLeft = parseFloat(getComputedStyle(stickman).left);
           const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
-          stickman.style.left = `${currentLeft + move.x}px`;
-          stickman.style.bottom = `${currentBottom + move.y}px`;
+          
+          // Calculate movement based on viewport width/height
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const moveX = (move.x / 100) * viewportWidth;
+          const moveY = (move.y / 100) * viewportHeight;
+          
+          stickman.style.left = `${currentLeft + moveX}px`;
+          stickman.style.bottom = `${currentBottom + moveY}px`;
         }
 
         setTimeout(() => {
@@ -413,7 +434,7 @@
             questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
             optionsElement.innerHTML = '';
             submitBtn.style.display = 'none';
-            hintBtn.style.display = 'none'; // Also hide hint button at end
+            hintBtn.style.display = 'none';
           }, 1500);
         }
       } else {
@@ -424,30 +445,17 @@
       }
     });
 
-    hintBtn.addEventListener('click', async () => {
-      const questionText = questions[currentQuestion].question;
-      hintBox.innerText = "Thinking... 🤔";
+    hintBtn.addEventListener('click', () => {
+      hintBox.innerText = questions[currentQuestion].hint;
+    });
 
-      try {
-        const response = await fetch('http://localhost:3000/api/hint', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ question: questionText })
-        });
-
-        const data = await response.json();
-        hintBox.innerText = data.hint;
-      } catch (error) {
-        hintBox.innerText = "Error generating hint. Is the AI server running?";
-        console.error(error);
-      }
+    // Initialize stickman position
+    window.addEventListener('load', () => {
+      stickman.style.left = '10%';
+      stickman.style.bottom = '10%';
     });
 
     loadQuestion();
   </script>
 </body>
 </html>
-
-
