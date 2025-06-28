@@ -12,7 +12,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #ffffff;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
@@ -54,11 +54,11 @@
 
     .right-panel {
       flex: 1;
+      height: 100px;
       min-width: 300px;
       position: relative;
       overflow: hidden;
-      background-color: #e0f7fa;
-      min-height: 500px;
+      height: 630px;
     }
 
     .mountain-img {
@@ -66,6 +66,7 @@
       display: block;
       position: relative;
       z-index: 1;
+      
     }
 
     .coin {
@@ -113,10 +114,16 @@
     }
 
     .cloudBig {
-      top: 83%;
+      top: 500px;
       height: 110px;
-      width: 780px;
+      width: 880px;
       animation: cloudSlideInRight 2s ease-out forwards;
+    }
+    .white-space{
+      bottom: 15%;
+      height: 1000px;
+      width: 800px;
+      z-index: 1;
     }
 
     @keyframes cloudSlideInLeft {
@@ -277,7 +284,10 @@
       <img src="coin.png" alt="Coin" class="coin coin2" />
       <img src="cloud1.png" alt="Cloud Left" class="cloud cloud1" />
       <img src="cloud2.png" alt="Cloud Right" class="cloud cloud2" />
+      <img src="white.PNG" alt="Cloud space" class="white-space" />
       <img src="bigcloud.png" alt="Cloud Big" class="cloud cloudBig" />
+      
+      <img src="bigcloud.png" alt="Cloud Big2" class="other" />
     </div>
   </div>  
 
@@ -325,7 +335,7 @@
 
     const movements = [
       { x: 70, y: 150 },
-      { x: 80, y: 65 },
+      { x: 77, y: 65 },
       { x: 110, y: 80 }
     ];
 
@@ -386,12 +396,12 @@
           if (correctAnswers === 2) {
             const coin2 = document.querySelector('.coin2');
             coin2.style.transition = "top 1s ease";
-            coin2.style.top = "55%";
+            coin2.style.top = "52%";
           }
           if (correctAnswers === 3) {
             const coin1 = document.querySelector('.coin1');
             coin1.style.transition = "top 1s ease";
-            coin1.style.top = "42%";
+            coin1.style.top = "38%";
           }
         }, 1000);
 
@@ -439,6 +449,5 @@
   </script>
 </body>
 </html>
-
 
 
