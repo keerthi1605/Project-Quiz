@@ -359,17 +359,19 @@
     let correctAnswers = 0;
 
     function getMovements() {
-      const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-      return isMobilePortrait ? [
-        { x: 25, y: 5 },
-        { x: 20, y: 4 },
-        { x: 22, y: 6 }
-      ] : [
-        { x: 8, y: 25 },
-        { x: 7.5, y: 15 },
-        { x: 8.5, y: 17 }
-      ];
-    }
+  const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+  console.log("Portrait check:", isMobilePortrait);
+
+  const moves = isMobilePortrait
+    ? [{ x:25, y:5 }, { x:20, y:4 }, { x:22, y:6 }]
+    : [{ x:8, y:25 }, { x:7.5, y:15 }, { x:8.5, y:17 }];
+  
+  console.log("Using movements:", moves);
+  return moves;
+}
+
+
+
 
     function loadQuestion() {
       hintBox.innerText = "";
@@ -400,55 +402,76 @@
     });
 
     submitBtn.addEventListener('click', () => {
-      if (selectedIndex === -1) {
-        alert("Please select an option!");
-        return;
+  console.log("Submit clicked — window.innerWidth:", window.innerWidth);
+
+  const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+  const movements = isMobilePortrait
+    ? [{ x: 25, y: 5 }, { x: 20, y: 4 }, { x: 22, y: 6 }]
+    : [{ x: 8, y: 25 }, { x: 7.5, y: 15 }, { x: 8.5, y: 17 }];
+
+  console.log("Portrait check:", isMobilePortrait);
+  console.log("Using movements:", movements);
+  console.log("Movement for currentQuestion:", movements[currentQuestion]);
+
+  if (selectedIndex === -1) {
+    alert("Please select an option!");
+    return;
+  }
+
+  const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
+
+  if (isCorrect) {
+    correctAnswers++;
+    progressBar.style.width = `${(correctAnswers / questions.length) * 100}%`;
+
+    if (currentQuestion < movements.length) {
+      const move = movements[currentQuestion];
+      const currentLeft = parseFloat(getComputedStyle(stickman).left);
+      const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
+
+      const moveX = (move.x / 100) * window.innerWidth;
+      const moveY = (move.y / 100) * window.innerHeight;
+
+      const newLeft = currentLeft + moveX;
+      const newBottom = currentBottom + moveY;
+
+      console.log(`Moving stickman to left: ${newLeft}px, bottom: ${newBottom}px`);
+
+      stickman.style.left = `${newLeft}px`;
+      stickman.style.bottom = `${newBottom}px`;
+    }
+
+    setTimeout(() => {
+      if (correctAnswers === 2) {
+        document.querySelector('.coin2').style.top = isMobilePortrait ? "45%" : "52%";
       }
-
-      const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-      const movements = getMovements();
-
-      const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
-
-      if (isCorrect) {
-        correctAnswers++;
-        progressBar.style.width = `${(correctAnswers / questions.length) * 100}%`;
-
-        if (currentQuestion < movements.length) {
-          const move = movements[currentQuestion];
-          const currentLeft = parseFloat(getComputedStyle(stickman).left);
-          const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
-          const moveX = (move.x / 100) * window.innerWidth;
-          const moveY = (move.y / 100) * window.innerHeight;
-          stickman.style.left = `${currentLeft + moveX}px`;
-          stickman.style.bottom = `${currentBottom + moveY}px`;
-        }
-
-        setTimeout(() => {
-          if (correctAnswers === 2) {
-            document.querySelector('.coin2').style.top = isMobilePortrait ? "45%" : "52%";
-          }
-          if (correctAnswers === 3) {
-            document.querySelector('.coin1').style.top = isMobilePortrait ? "30%" : "38%";
-          }
-        }, 1000);
-
-        currentQuestion++;
-        if (currentQuestion < questions.length) {
-          setTimeout(loadQuestion, 1500);
-        } else {
-          setTimeout(() => {
-            questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
-            optionsElement.innerHTML = '';
-            submitBtn.style.display = 'none';
-            hintBtn.style.display = 'none';
-          }, 1500);
-        }
-      } else {
-        stickman.src = "stickmanRed.png";
-        setTimeout(() => alert("Oops! That's not the correct answer. Try again."), 300);
+      if (correctAnswers === 3) {
+        document.querySelector('.coin1').style.top = isMobilePortrait ? "30%" : "38%";
       }
-    });
+    }, 1000);
+
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      setTimeout(loadQuestion, 1500);
+    } else {
+      setTimeout(() => {
+        questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
+        optionsElement.innerHTML = '';
+        submitBtn.style.display = 'none';
+        hintBtn.style.display = 'none';
+      }, 1500);
+    }
+  } else {
+    stickman.src = "stickmanRed.png";
+    setTimeout(() => {
+      alert("Oops! That's not the correct answer. Try again.");
+    }, 300);
+  }
+});
+
+
+    
+    
 
     hintBtn.addEventListener('click', () => {
       hintBox.innerText = questions[currentQuestion].hint;
