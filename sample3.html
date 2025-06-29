@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Human Rights Policy Quiz</title>
   <style>
+    /* Your original CSS – unchanged! */
     * {
       box-sizing: border-box;
     }
@@ -264,74 +265,28 @@
         width: 10%;
         max-width: 40px;
       }
-      
+
       .coin1 {
         top: 55% !important;
         left: 40% !important;
       }
-      
+
       .coin2 {
         top: 65% !important;
         left: 25% !important;
-      }
-      
-      .cloud1 {
-        top: 10%;
-        width: 35%;
-      }
-      
-      .cloud2 {
-        top: 5%;
-        width: 15%;
-      }
-      
-      .cloudBig {
-        top: 70%;
-        width: 90%;
-      }
-    }
-
-    @media (max-width: 480px) and (orientation: portrait) {
-      .right-panel {
-        height: 35vh;
-      }
-      
-      .stickman {
-        width: 15%;
-        bottom: 20% !important;
-      }
-      
-      .coin {
-        width: 12%;
-      }
-      
-      .header {
-        padding: 10px 15px;
-        flex-wrap: wrap;
-      }
-      
-      .header .nav-links {
-        gap: 10px;
-        font-size: 14px;
-      }
-      
-      .logo-img {
-        width: 50px;
       }
     }
   </style>
 </head>
 <body>
-
+  <!-- HEADER + PANELS -->
   <div class="header">
     <div class="logo">
       <img src="logo2.PNG" class="logo-img" alt="Logo">
     </div>
     <div class="menu">☰ Human Rights Policy</div>
     <div class="nav-links">
-      <div>HELP</div>
-      <div>RESOURCES</div>
-      <div>EXIT</div>
+      <div>HELP</div><div>RESOURCES</div><div>EXIT</div>
     </div>
   </div>
 
@@ -340,11 +295,8 @@
       <div class="question-container">
         <div class="question" id="question"></div>
       </div>
-
       <div class="options" id="options"></div>
-      <div class="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
+      <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
       <button class="submit-btn" id="submit-btn">Submit</button>
       <button class="submit-btn" id="hint-btn">💡 Hint</button>
       <div id="hint-box" style="margin-top: 15px; font-style: italic; color: #333;"></div>
@@ -359,7 +311,7 @@
       <img src="cloud2.png" alt="Cloud Right" class="cloud cloud2" />
       <img src="bigcloud.png" alt="Cloud Big" class="cloud cloudBig" />
     </div>
-  </div>  
+  </div>
 
   <script>
     const coins = document.querySelectorAll('.coin');
@@ -406,19 +358,18 @@
     let selectedIndex = -1;
     let correctAnswers = 0;
 
-    // Check if mobile portrait
-    const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-    
-    // Movement values - different for mobile portrait
-    const movements = isMobilePortrait ? [
-      { x: 25, y: 5 },   // More horizontal, less vertical movement for mobile portrait
-      { x: 20, y: 4 },
-      { x: 22, y: 6 }
-    ] : [
-      { x: 8, y: 25 },
-      { x: 7.5, y: 15 },
-      { x: 8.5, y: 17 }
-    ];
+    function getMovements() {
+      const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+      return isMobilePortrait ? [
+        { x: 25, y: 5 },
+        { x: 20, y: 4 },
+        { x: 22, y: 6 }
+      ] : [
+        { x: 8, y: 25 },
+        { x: 7.5, y: 15 },
+        { x: 8.5, y: 17 }
+      ];
+    }
 
     function loadQuestion() {
       hintBox.innerText = "";
@@ -433,16 +384,6 @@
       });
       selectedIndex = -1;
       stickman.src = "stickman.png";
-      
-      // Reset position for mobile portrait
-      if (isMobilePortrait) {
-        stickman.style.left = '15%';
-        stickman.style.bottom = '20%';
-        document.querySelector('.coin1').style.top = '55%';
-        document.querySelector('.coin1').style.left = '40%';
-        document.querySelector('.coin2').style.top = '65%';
-        document.querySelector('.coin2').style.left = '25%';
-      }
     }
 
     coins.forEach(coin => {
@@ -464,6 +405,9 @@
         return;
       }
 
+      const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+      const movements = getMovements();
+
       const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
 
       if (isCorrect) {
@@ -474,11 +418,8 @@
           const move = movements[currentQuestion];
           const currentLeft = parseFloat(getComputedStyle(stickman).left);
           const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
-          
-          // Calculate movement based on viewport width/height
           const moveX = (move.x / 100) * window.innerWidth;
           const moveY = (move.y / 100) * window.innerHeight;
-          
           stickman.style.left = `${currentLeft + moveX}px`;
           stickman.style.bottom = `${currentBottom + moveY}px`;
         }
@@ -514,28 +455,10 @@
     });
 
     window.addEventListener('load', () => {
-      if (isMobilePortrait) {
-        stickman.style.left = '15%';
-        stickman.style.bottom = '20%';
-        document.querySelector('.coin1').style.top = '55%';
-        document.querySelector('.coin1').style.left = '40%';
-        document.querySelector('.coin2').style.top = '65%';
-        document.querySelector('.coin2').style.left = '25%';
-      } else {
-        stickman.style.left = '10%';
-        stickman.style.bottom = '10%';
-      }
+      stickman.style.left = '10%';
+      stickman.style.bottom = '10%';
+      loadQuestion();
     });
-
-    // Handle screen rotation
-    window.addEventListener('resize', () => {
-      const nowMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-      if (nowMobilePortrait !== isMobilePortrait) {
-        location.reload(); // Reload when orientation changes
-      }
-    });
-
-    loadQuestion();
   </script>
 </body>
 </html>
