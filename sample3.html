@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Human Rights Policy Quiz</title>
   <style>
-    /* Your original CSS – unchanged! */
     * {
       box-sizing: border-box;
     }
@@ -197,7 +196,7 @@
       width: 6%;
       max-width: 60px;
       z-index: 2;
-      transition: all 2s ease-in-out;
+      transition: all 1s ease-in-out;
     }
 
     .progress-container {
@@ -256,7 +255,7 @@
 
       .stickman {
         left: 15% !important;
-        bottom: 15% !important;
+        bottom: 20% !important;
         width: 12%;
         max-width: 50px;
       }
@@ -265,28 +264,74 @@
         width: 10%;
         max-width: 40px;
       }
-
+      
       .coin1 {
         top: 55% !important;
         left: 40% !important;
       }
-
+      
       .coin2 {
         top: 65% !important;
         left: 25% !important;
+      }
+      
+      .cloud1 {
+        top: 10%;
+        width: 35%;
+      }
+      
+      .cloud2 {
+        top: 5%;
+        width: 15%;
+      }
+      
+      .cloudBig {
+        top: 70%;
+        width: 90%;
+      }
+    }
+
+    @media (max-width: 480px) and (orientation: portrait) {
+      .right-panel {
+        height: 35vh;
+      }
+      
+      .stickman {
+        width: 15%;
+        bottom: 25% !important;
+      }
+      
+      .coin {
+        width: 12%;
+      }
+      
+      .header {
+        padding: 10px 15px;
+        flex-wrap: wrap;
+      }
+      
+      .header .nav-links {
+        gap: 10px;
+        font-size: 14px;
+      }
+      
+      .logo-img {
+        width: 50px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- HEADER + PANELS -->
+
   <div class="header">
     <div class="logo">
       <img src="logo2.PNG" class="logo-img" alt="Logo">
     </div>
     <div class="menu">☰ Human Rights Policy</div>
     <div class="nav-links">
-      <div>HELP</div><div>RESOURCES</div><div>EXIT</div>
+      <div>HELP</div>
+      <div>RESOURCES</div>
+      <div>EXIT</div>
     </div>
   </div>
 
@@ -295,8 +340,11 @@
       <div class="question-container">
         <div class="question" id="question"></div>
       </div>
+
       <div class="options" id="options"></div>
-      <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
       <button class="submit-btn" id="submit-btn">Submit</button>
       <button class="submit-btn" id="hint-btn">💡 Hint</button>
       <div id="hint-box" style="margin-top: 15px; font-style: italic; color: #333;"></div>
@@ -311,7 +359,7 @@
       <img src="cloud2.png" alt="Cloud Right" class="cloud cloud2" />
       <img src="bigcloud.png" alt="Cloud Big" class="cloud cloudBig" />
     </div>
-  </div>
+  </div>  
 
   <script>
     const coins = document.querySelectorAll('.coin');
@@ -358,20 +406,21 @@
     let selectedIndex = -1;
     let correctAnswers = 0;
 
+    function isMobilePortrait() {
+      return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+    }
+
     function getMovements() {
-  const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-  console.log("Portrait check:", isMobilePortrait);
-
-  const moves = isMobilePortrait
-    ? [{ x:25, y:5 }, { x:20, y:4 }, { x:22, y:6 }]
-    : [{ x:8, y:25 }, { x:7.5, y:15 }, { x:8.5, y:17 }];
-  
-  console.log("Using movements:", moves);
-  return moves;
-}
-
-
-
+      return isMobilePortrait() ? [
+        { x: 15, y: 5 },  // More horizontal movement for portrait
+        { x: 12, y: 4 },
+        { x: 13, y: 6 }
+      ] : [
+        { x: 8, y: 25 },
+        { x: 7.5, y: 15 },
+        { x: 8.5, y: 17 }
+      ];
+    }
 
     function loadQuestion() {
       hintBox.innerText = "";
@@ -402,85 +451,95 @@
     });
 
     submitBtn.addEventListener('click', () => {
-  console.log("Submit clicked — window.innerWidth:", window.innerWidth);
-
-  const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-  const movements = isMobilePortrait
-    ? [{ x: 25, y: 5 }, { x: 20, y: 4 }, { x: 22, y: 6 }]
-    : [{ x: 8, y: 25 }, { x: 7.5, y: 15 }, { x: 8.5, y: 17 }];
-
-  console.log("Portrait check:", isMobilePortrait);
-  console.log("Using movements:", movements);
-  console.log("Movement for currentQuestion:", movements[currentQuestion]);
-
-  if (selectedIndex === -1) {
-    alert("Please select an option!");
-    return;
-  }
-
-  const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
-
-  if (isCorrect) {
-    correctAnswers++;
-    progressBar.style.width = `${(correctAnswers / questions.length) * 100}%`;
-
-    if (currentQuestion < movements.length) {
-      const move = movements[currentQuestion];
-      const currentLeft = parseFloat(getComputedStyle(stickman).left);
-      const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
-
-      const moveX = (move.x / 100) * window.innerWidth;
-      const moveY = (move.y / 100) * window.innerHeight;
-
-      const newLeft = currentLeft + moveX;
-      const newBottom = currentBottom + moveY;
-
-      console.log(`Moving stickman to left: ${newLeft}px, bottom: ${newBottom}px`);
-
-      stickman.style.left = `${newLeft}px`;
-      stickman.style.bottom = `${newBottom}px`;
-    }
-
-    setTimeout(() => {
-      if (correctAnswers === 2) {
-        document.querySelector('.coin2').style.top = isMobilePortrait ? "45%" : "52%";
+      if (selectedIndex === -1) {
+        alert("Please select an option!");
+        return;
       }
-      if (correctAnswers === 3) {
-        document.querySelector('.coin1').style.top = isMobilePortrait ? "30%" : "38%";
+
+      const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
+      const movements = getMovements();
+
+      if (isCorrect) {
+        correctAnswers++;
+        progressBar.style.width = `${(correctAnswers / questions.length) * 100}%`;
+
+        if (currentQuestion < movements.length) {
+          const move = movements[currentQuestion];
+          
+          if (isMobilePortrait()) {
+            // Use percentage-based movement for mobile portrait
+            const currentLeft = parseFloat(stickman.style.left);
+            const currentBottom = parseFloat(stickman.style.bottom);
+            
+            stickman.style.left = `${currentLeft + move.x}%`;
+            stickman.style.bottom = `${currentBottom + move.y}%`;
+          } else {
+            // Use pixel-based movement for desktop/landscape
+            const currentLeft = parseFloat(getComputedStyle(stickman).left);
+            const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
+            
+            const moveX = (move.x / 100) * window.innerWidth;
+            const moveY = (move.y / 100) * window.innerHeight;
+            
+            stickman.style.left = `${currentLeft + moveX}px`;
+            stickman.style.bottom = `${currentBottom + moveY}px`;
+          }
+        }
+
+        setTimeout(() => {
+          if (correctAnswers === 2) {
+            document.querySelector('.coin2').style.top = isMobilePortrait() ? "45%" : "52%";
+          }
+          if (correctAnswers === 3) {
+            document.querySelector('.coin1').style.top = isMobilePortrait() ? "30%" : "38%";
+          }
+        }, 1000);
+
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          setTimeout(loadQuestion, 1500);
+        } else {
+          setTimeout(() => {
+            questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
+            optionsElement.innerHTML = '';
+            submitBtn.style.display = 'none';
+            hintBtn.style.display = 'none';
+          }, 1500);
+        }
+      } else {
+        stickman.src = "stickmanRed.png";
+        setTimeout(() => alert("Oops! That's not the correct answer. Try again."), 300);
       }
-    }, 1000);
-
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-      setTimeout(loadQuestion, 1500);
-    } else {
-      setTimeout(() => {
-        questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
-        optionsElement.innerHTML = '';
-        submitBtn.style.display = 'none';
-        hintBtn.style.display = 'none';
-      }, 1500);
-    }
-  } else {
-    stickman.src = "stickmanRed.png";
-    setTimeout(() => {
-      alert("Oops! That's not the correct answer. Try again.");
-    }, 300);
-  }
-});
-
-
-    
-    
+    });
 
     hintBtn.addEventListener('click', () => {
       hintBox.innerText = questions[currentQuestion].hint;
     });
 
+    // Initialize positions
+    function initializePositions() {
+      if (isMobilePortrait()) {
+        stickman.style.left = '15%';
+        stickman.style.bottom = '20%';
+        document.querySelector('.coin1').style.top = '55%';
+        document.querySelector('.coin1').style.left = '40%';
+        document.querySelector('.coin2').style.top = '65%';
+        document.querySelector('.coin2').style.left = '25%';
+      } else {
+        stickman.style.left = '10%';
+        stickman.style.bottom = '10%';
+      }
+    }
+
     window.addEventListener('load', () => {
-      stickman.style.left = '10%';
-      stickman.style.bottom = '10%';
+      initializePositions();
       loadQuestion();
+    });
+
+    window.addEventListener('resize', () => {
+      if (isMobilePortrait() !== (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches)) {
+        location.reload();
+      }
     });
   </script>
 </body>
