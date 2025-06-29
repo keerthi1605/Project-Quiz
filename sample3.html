@@ -1,133 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Quiz</title>
-<style>
-  /* Core Styles (same as before) */
-  *{box-sizing:border-box;margin:0;padding:0}
-  img{display:block;max-width:100%;height:auto}
-  body{font-family:Arial,sans-serif;display:flex;flex-direction:column;overflow-x:hidden}
-  .header{padding:15px;text-align:center;font-weight:bold;border-bottom:1px solid #ddd}
-  .main{display:flex;flex-wrap:wrap;min-height:calc(100vh-60px)}
-  .left-panel{width:40vw;padding:30px;background:#d9d9d9;flex-direction:column;justify-content:center;display:flex}
-  .right-panel{flex:1;position:relative;overflow:hidden;height:600px;min-width:300px}
-  .mountain-img{position:absolute;bottom:0;width:100%;height:100%;object-fit:cover;z-index:1}
-  .stickman{position:absolute;bottom:10%;left:10%;width:6%;transform-origin:bottom left;transition:all 1s ease-in-out;z-index:2}
-  .coin{position:absolute;width:5%;max-width:50px;transform:translate(-50%,-50%);transition:top .5s ease;z-index:3}
-  .coin1{top:68%;left:39%} .coin2{top:79%;left:27%}
-  .cloud{position:absolute;z-index:3}
-  .cloud1{top:17%;width:35%;left:-23%;animation:cloudSlideInLeft 2s .5s forwards}
-  .cloud2{top:8%;width:12%;right:-12%;animation:cloudSlideInRight 2s .8s forwards}
-  .cloudBig{top:80%;width:88%;animation:cloudSlideInRight 2s forwards}
-  @keyframes cloudSlideInLeft{from{left:-22%}to{left:0.3%}}
-  @keyframes cloudSlideInRight{from{right:-12%}to{right:0%}}
-  .option{...} .submit-btn{...} /* keep same as previous */
-  .progress-container{...} .progress-bar{...}
-  @keyframes coinJump{...} .jump-rotate{...}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Human Rights Policy Quiz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  /* Only Mobile Changes */
-  @media(max-width:768px){
-    .main{flex-direction:column;min-height:auto}
-    .left-panel{width:100%;padding:20px;order:2}
-    .right-panel{width:100%;height:50vh;max-height:400px;min-height:300px;order:1}
-    .mountain-img{object-fit:contain}
-    .stickman{width:8%; bottom:5%} /* Shrink and lower position */
-    .coin{width:8%}
-  }
-</style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background-color: #fff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header .menu {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .header .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .main {
+      display: flex;
+      flex-wrap: wrap;
+      min-height: calc(100vh - 60px);
+    }
+
+    .left-panel {
+      width: 40vw;
+      padding: 30px;
+      background-color: #d9d9d9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-panel {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .mountain-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .coin {
+      position: absolute;
+      width: 5%;
+      max-width: 50px;
+      height: auto;
+      aspect-ratio: 1/1;
+      z-index: 3;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease;
+    }
+
+    .coin1 {
+      top: 68%;
+      left: 39%;
+      transform: translate(-50%, -50%);
+    }
+
+    .coin2 {
+      top: 79%;
+      left: 27%;
+      transform: translate(-50%, -50%);
+    }
+
+    .cloud {
+      position: absolute;
+      z-index: 3;
+    }
+
+    .cloud1 {
+      top: 17%;
+      height: 12%;
+      width: 35%;
+      left: -23%;
+      animation: cloudSlideInLeft 2s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+
+    .cloud2 {
+      top: 8%;
+      right: -12%;
+      width: 12%;
+      animation: cloudSlideInRight 2s ease-out forwards;
+      animation-delay: 0.8s;
+    }
+
+    .cloudBig {
+      top: 80%;
+      height: 23%;
+      width: 88%;
+      animation: cloudSlideInRight 2s ease-out forwards;
+    }
+
+    @keyframes cloudSlideInLeft {
+      from { left: -22%; }
+      to { left: 0.3%; }
+    }
+
+    @keyframes cloudSlideInRight {
+      from { right: -12%; }
+      to { right: 0%; }
+    }
+
+    .question {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      margin-top: 20px;
+    }
+
+    .option {
+      background-color: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .option:hover {
+      background-color: #e0e0e0;
+      transform: scale(1.01);
+    }
+
+    .option input {
+      margin-right: 10px;
+    }
+
+    .submit-btn {
+      background-color: #bbb;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      margin-top: 30px;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #999;
+      transform: translateY(-2px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      width: 70px;
+    }
+
+    .stickman {
+      position: absolute;
+      bottom: 10%;
+      left: 10%;
+      width: 6%;
+      max-width: 60px;
+      z-index: 2;
+      transition: all 2s ease-in-out;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background-color: #ddd;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4CAF50;
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    @keyframes coinJump {
+      0% { transform: translate(-50%, -50%) rotateY(0); }
+      50% { transform: translate(-50%, -150%) rotateY(180deg); }
+      100% { transform: translate(-50%, -50%) rotateY(360deg); }
+    }
+
+    .jump-rotate {
+      animation: coinJump 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .left-panel {
+        width: 100%;
+        padding: 20px;
+        order: 2;
+        min-height: 60vh;
+      }
+
+      .right-panel {
+        width: 100%;
+        height: 40vh; /* Adjusted for better visibility */
+        min-height: 300px;
+        order: 1;
+      }
+
+      .mountain-img {
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .stickman {
+        left: 10%;
+        bottom: 10%;
+        width: 10%;
+      }
+
+      .coin {
+        width: 8%;
+      }
+      
+      /* Adjust coin positions for portrait */
+      .coin1 {
+        top: 60%;
+        left: 35%;
+      }
+      
+      .coin2 {
+        top: 70%;
+        left: 20%;
+      }
+      
+      /* Adjust cloud positions */
+      .cloud1 {
+        top: 10%;
+        width: 30%;
+      }
+      
+      .cloud2 {
+        top: 5%;
+        width: 10%;
+      }
+      
+      .cloudBig {
+        top: 70%;
+        width: 80%;
+      }
+    }
+    
+    /* Additional media query for very small screens */
+    @media (max-width: 480px) {
+      .right-panel {
+        height: 35vh;
+      }
+      
+      .stickman {
+        width: 12%;
+      }
+      
+      .coin {
+        width: 10%;
+      }
+      
+      .header {
+        padding: 10px 15px;
+        flex-wrap: wrap;
+      }
+      
+      .header .nav-links {
+        gap: 10px;
+        font-size: 14px;
+      }
+      
+      .logo-img {
+        width: 50px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="header">☰ Human Rights Policy Quiz</div>
-  <div class="main">
-    <div class="left-panel">
-      <div id="question" style="margin-bottom:20px;font-size:18px"></div>
-      <div id="options"></div>
-      <div class="progress-container"><div id="progress-bar" class="progress-bar"></div></div>
-      <button id="submit-btn" class="submit-btn">Submit</button>
-      <button id="hint-btn" class="submit-btn">💡 Hint</button>
-      <div id="hint-box" style="margin-top:15px;font-style:italic;color:#333"></div>
+
+  <div class="header">
+    <div class="logo">
+      <img src="logo2.PNG" class="logo-img" alt="Logo">
     </div>
-    <div class="right-panel">
-      <img src="mountains3.PNG" class="mountain-img">
-      <img src="stickman.png" id="stickman" class="stickman">
-      <img src="coin.png" class="coin coin1">
-      <img src="coin.png" class="coin coin2">
-      <img src="cloud1.png" class="cloud cloud1">
-      <img src="cloud2.png" class="cloud cloud2">
-      <img src="bigcloud.png" class="cloud cloudBig">
+    <div class="menu">☰ Human Rights Policy</div>
+    <div class="nav-links">
+      <div>HELP</div>
+      <div>RESOURCES</div>
+      <div>EXIT</div>
     </div>
   </div>
 
-  <script>
-    const stickman=document.getElementById('stickman');
-    const coins=document.querySelectorAll('.coin');
-    const submitBtn=document.getElementById('submit-btn');
-    const hintBtn=document.getElementById('hint-btn');
-    const hintBox=document.getElementById('hint-box');
-    const qEl=document.getElementById('question'), optEl=document.getElementById('options');
-    const progressBar=document.getElementById('progress-bar');
+  <div class="main">
+    <div class="left-panel">
+      <div class="question-container">
+        <div class="question" id="question"></div>
+      </div>
 
-    const questions=[
-      {q:"Which is NOT a fundamental principle of human rights?",ops:["Universality","Inalienability","Indivisibility","Profitability"],cor:3,hin:"Think beyond business motivations."},
-      {q:"Which is NOT best practice to prevent child labor?",ops:["Follow labor laws","Use age verification","Don’t keep records","Influence partners"],cor:2,hin:"What's careless?"},
-      {q:"Primary purpose of UDHR?",ops:["Global gov’t","Common standard","Sanctions","Replace laws"],cor:1,hin:"Equality & global rights."}
+      <div class="options" id="options"></div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <button class="submit-btn" id="submit-btn">Submit</button>
+      <button class="submit-btn" id="hint-btn">💡 Hint</button>
+      <div id="hint-box" style="margin-top: 15px; font-style: italic; color: #333;"></div>
+    </div>
+
+    <div class="right-panel">
+      <img src="mountains3.PNG" alt="Mountain" class="mountain-img" />
+      <img src="stickman.png" alt="Stickman" class="stickman" id="stickman" />
+      <img src="coin.png" alt="Coin" class="coin coin1" />
+      <img src="coin.png" alt="Coin" class="coin coin2" />
+      <img src="cloud1.png" alt="Cloud Left" class="cloud cloud1" />
+      <img src="cloud2.png" alt="Cloud Right" class="cloud cloud2" />
+      <img src="bigcloud.png" alt="Cloud Big" class="cloud cloudBig" />
+    </div>
+  </div>  
+
+  <script>
+    const coins = document.querySelectorAll('.coin');
+    const submitBtn = document.getElementById('submit-btn');
+    const hintBtn = document.getElementById('hint-btn');
+    const hintBox = document.getElementById('hint-box');
+    const stickman = document.getElementById('stickman');
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const progressBar = document.getElementById('progress-bar');
+
+    const questions = [
+      {
+        question: "Which of the following is NOT a fundamental principle of human rights?",
+        options: ["Universality", "Inalienability", "Indivisibility", "Profitability"],
+        correctIndex: 3,
+        hint: "Eliminate the one that sounds more like a business goal than a basic right."
+      },
+      {
+        question: "Which one is NOT a best practice to prevent child labor?",
+        options: [
+          "Follow national labor laws.",
+          "Use age verification methods.",
+          "Don't maintain employee records.",
+          "Influence partners to prevent child labor."
+        ],
+        correctIndex: 2,
+        hint: "Which one sounds like something a careless company would do?"
+      },
+      {
+        question: "What is the primary purpose of the Universal Declaration of Human Rights?",
+        options: [
+          "To establish a global government",
+          "To provide a common standard of achievements for all peoples and all nations",
+          "To enforce economic sanctions on non-compliant countries",
+          "To replace all national laws with international standards"
+        ],
+        correctIndex: 1,
+        hint: "Focus on the answer that talks about equality and global rights."
+      }
     ];
 
-    let idx=0, sel=-1, score=0, dx=0, dy=0;
+    let currentQuestion = 0;
+    let selectedIndex = -1;
+    let correctAnswers = 0;
 
-    function load(){
-      hintBox.innerText="";
-      const qu=questions[idx];
-      qEl.innerHTML=`<strong>${qu.q}</strong>`;
-      optEl.innerHTML="";
-      qu.ops.forEach((o,i)=>{
-        const lbl=document.createElement('label'); lbl.className='option';
-        lbl.innerHTML=`<input type="radio" name="q" value="${i}">${o}`;
-        optEl.appendChild(lbl);
+    // Adjusted movements for mobile portrait
+    const movements = window.innerWidth <= 768 ? [
+      { x: 15, y: 15 },
+      { x: 12, y: 10 },
+      { x: 13, y: 12 }
+    ] : [
+      { x: 8, y: 25 },
+      { x: 7.5, y: 15 },
+      { x: 8.5, y: 17 }
+    ];
+
+    function loadQuestion() {
+      hintBox.innerText = "";
+      const q = questions[currentQuestion];
+      questionElement.innerHTML = `<strong>${q.question}</strong><p style="font-size: 14px; margin-top: 10px;">🖱️ Select the correct option and then select <strong>Submit</strong>.</p>`;
+      optionsElement.innerHTML = '';
+      q.options.forEach((option, index) => {
+        const optionElement = document.createElement('label');
+        optionElement.className = 'option';
+        optionElement.innerHTML = `<input type="radio" name="q" value="${index}" />${option}`;
+        optionsElement.appendChild(optionElement);
       });
-      sel=-1;
-      stickman.style.transform=`translate(${dx}px,-${dy}px)`;
+      selectedIndex = -1;
+      stickman.src = "stickman.png";
     }
 
-    coins.forEach(c=>{
-      c.addEventListener('click',()=>c.classList.add('jump-rotate'));
-      c.addEventListener('animationend',()=>c.classList.remove('jump-rotate'));
+    coins.forEach(coin => {
+      coin.addEventListener('click', () => coin.classList.add('jump-rotate'));
+      coin.addEventListener('animationend', () => coin.classList.remove('jump-rotate'));
     });
 
-    optEl.addEventListener('change',e=>{ if(e.target.name==='q') sel=+e.target.value; });
-
-    submitBtn.addEventListener('click',()=>{
-      if(sel<0){alert("Pick an option!");return;}
-      const correct=sel===questions[idx].cor;
-      if(correct){
-        score++; progressBar.style.width=`${(score/questions.length*100)}%`;
-        const panel=document.querySelector('.right-panel').getBoundingClientRect();
-        if(window.innerWidth>768){
-          const steps=[{x:100,y:80},{x:110,y:70},{x:120,y:90}];
-          dx+=steps[idx].x; dy+=steps[idx].y;
-        } else {
-          const steps=[{x:0.12*panel.width,y:0.30*panel.height},{x:0.10*panel.width,y:0.20*panel.height},{x:0.13*panel.width,y:0.25*panel.height}];
-          dx+=steps[idx].x; dy+=steps[idx].y;
-        }
-        stickman.style.transform=`translate(${dx}px,-${dy}px)`;
-        setTimeout(()=>{
-          if(score===2)coins[1].classList.add('jump-rotate');
-          if(score===3)coins[0].classList.add('jump-rotate');
-        },800);
-      } else {
-        stickman.src="stickmanRed.png";
-        setTimeout(()=>stickman.src="stickman.png",800);
+    optionsElement.addEventListener('change', (e) => {
+      if (e.target.name === 'q') {
+        hintBox.innerText = "";
+        selectedIndex = parseInt(e.target.value);
+        stickman.src = "stickman.png";
       }
-      idx++;
-      if(idx<questions.length) setTimeout(load,1200);
-      else setTimeout(()=>{
-        qEl.innerHTML="🎉 Quiz complete!";
-        optEl.innerHTML=""; submitBtn.style.display=hintBtn.style.display="none";
-      },1200);
     });
 
-    hintBtn.addEventListener('click',()=>hintBox.innerText=questions[idx].hin);
+    submitBtn.addEventListener('click', () => {
+      if (selectedIndex === -1) {
+        alert("Please select an option!");
+        return;
+      }
 
-    window.onload=()=>{ dx=dy=0; load(); }
+      const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
+
+      if (isCorrect) {
+        correctAnswers++;
+        progressBar.style.width = `${(correctAnswers / questions.length) * 100}%`;
+
+        if (currentQuestion < movements.length) {
+          const move = movements[currentQuestion];
+          const currentLeft = parseFloat(getComputedStyle(stickman).left);
+          const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
+          
+          // Calculate movement based on viewport width/height
+          const moveX = (move.x / 100) * window.innerWidth;
+          const moveY = (move.y / 100) * window.innerHeight;
+          
+          stickman.style.left = `${currentLeft + moveX}px`;
+          stickman.style.bottom = `${currentBottom + moveY}px`;
+        }
+
+        setTimeout(() => {
+          if (correctAnswers === 2) document.querySelector('.coin2').style.top = window.innerWidth <= 768 ? "45%" : "52%";
+          if (correctAnswers === 3) document.querySelector('.coin1').style.top = window.innerWidth <= 768 ? "30%" : "38%";
+        }, 1000);
+
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          setTimeout(loadQuestion, 1500);
+        } else {
+          setTimeout(() => {
+            questionElement.innerHTML = "<strong>🎉 Congratulations! You completed the quiz!</strong>";
+            optionsElement.innerHTML = '';
+            submitBtn.style.display = 'none';
+            hintBtn.style.display = 'none';
+          }, 1500);
+        }
+      } else {
+        stickman.src = "stickmanRed.png";
+        setTimeout(() => alert("Oops! That's not the correct answer. Try again."), 300);
+      }
+    });
+
+    hintBtn.addEventListener('click', () => {
+      hintBox.innerText = questions[currentQuestion].hint;
+    });
+
+    window.addEventListener('load', () => {
+      stickman.style.left = '10%';
+      stickman.style.bottom = '10%';
+    });
+
+    // Adjust for orientation changes
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        // Reset stickman position when switching to portrait
+        stickman.style.left = '10%';
+        stickman.style.bottom = '10%';
+      }
+    });
+
+    loadQuestion();
   </script>
 </body>
 </html>
