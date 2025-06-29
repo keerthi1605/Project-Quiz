@@ -225,14 +225,58 @@
       animation: coinJump 1s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
+    /* Portrait warning styles */
+    .portrait-warning {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      color: white;
+      z-index: 1000;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .portrait-warning p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    
+    .portrait-warning button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
     @media (max-width: 768px) and (orientation: portrait) {
+      .portrait-warning {
+        display: flex;
+      }
+      
+      .right-panel {
+        display: none;
+      }
+      
+      .left-panel {
+        width: 100%;
+      }
+      
       .main {
         flex-direction: column;
         height: auto;
       }
 
       .left-panel {
-        width: 100%;
         padding: 20px;
         order: 2;
         min-height: 60vh;
@@ -255,7 +299,7 @@
 
       .stickman {
         left: 15% !important;
-        bottom: 20% !important;
+        bottom: 15% !important;
         width: 12%;
         max-width: 50px;
       }
@@ -298,7 +342,7 @@
       
       .stickman {
         width: 15%;
-        bottom: 25% !important;
+        bottom: 20% !important;
       }
       
       .coin {
@@ -322,6 +366,11 @@
   </style>
 </head>
 <body>
+  <!-- Portrait Mode Warning -->
+  <div class="portrait-warning" id="portraitWarning">
+    <p>For the best experience with animations, please rotate your device to landscape mode.</p>
+    <button id="continueAnyway">Continue Anyway</button>
+  </div>
 
   <div class="header">
     <div class="logo">
@@ -370,6 +419,8 @@
     const questionElement = document.getElementById('question');
     const optionsElement = document.getElementById('options');
     const progressBar = document.getElementById('progress-bar');
+    const portraitWarning = document.getElementById('portraitWarning');
+    const continueAnywayBtn = document.getElementById('continueAnyway');
 
     const questions = [
       {
@@ -437,6 +488,16 @@
       stickman.src = "stickman.png";
     }
 
+    function checkOrientation() {
+      if (isMobilePortrait()) {
+        portraitWarning.style.display = 'flex';
+        document.querySelector('.right-panel').style.display = 'none';
+      } else {
+        portraitWarning.style.display = 'none';
+        document.querySelector('.right-panel').style.display = 'block';
+      }
+    }
+
     coins.forEach(coin => {
       coin.addEventListener('click', () => coin.classList.add('jump-rotate'));
       coin.addEventListener('animationend', () => coin.classList.remove('jump-rotate'));
@@ -467,14 +528,12 @@
           const move = movements[currentQuestion];
           
           if (isMobilePortrait()) {
-            // Use percentage-based movement for mobile portrait
-            const currentLeft = parseFloat(stickman.style.left);
-            const currentBottom = parseFloat(stickman.style.bottom);
+            const currentLeft = parseFloat(stickman.style.left || '15');
+            const currentBottom = parseFloat(stickman.style.bottom || '15');
             
             stickman.style.left = `${currentLeft + move.x}%`;
             stickman.style.bottom = `${currentBottom + move.y}%`;
           } else {
-            // Use pixel-based movement for desktop/landscape
             const currentLeft = parseFloat(getComputedStyle(stickman).left);
             const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
             
@@ -516,30 +575,25 @@
       hintBox.innerText = questions[currentQuestion].hint;
     });
 
-    // Initialize positions
-    function initializePositions() {
+    continueAnywayBtn.addEventListener('click', () => {
+      portraitWarning.style.display = 'none';
+      document.querySelector('.right-panel').style.display = 'block';
+    });
+
+    window.addEventListener('load', () => {
+      checkOrientation();
       if (isMobilePortrait()) {
         stickman.style.left = '15%';
         stickman.style.bottom = '20%';
-        document.querySelector('.coin1').style.top = '55%';
-        document.querySelector('.coin1').style.left = '40%';
-        document.querySelector('.coin2').style.top = '65%';
-        document.querySelector('.coin2').style.left = '25%';
       } else {
         stickman.style.left = '10%';
         stickman.style.bottom = '10%';
       }
-    }
-
-    window.addEventListener('load', () => {
-      initializePositions();
       loadQuestion();
     });
 
     window.addEventListener('resize', () => {
-      if (isMobilePortrait() !== (window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches)) {
-        location.reload();
-      }
+      checkOrientation();
     });
   </script>
 </body>
