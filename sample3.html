@@ -121,14 +121,6 @@
       width: 88%;
       animation: cloudSlideInRight 2s ease-out forwards;
     }
-    
-    .white-space {
-      position: absolute;
-      bottom: 15%;
-      height: 100%;
-      width: 80%;
-      z-index: 1;
-    }
 
     @keyframes cloudSlideInLeft {
       from { left: -22%; }
@@ -236,25 +228,92 @@
     @media (max-width: 768px) {
       .main {
         flex-direction: column;
-      }
-
-      .left-panel,
-      .right-panel {
-        width: 100%;
+        height: auto;
       }
 
       .left-panel {
+        width: 100%;
         padding: 20px;
+        order: 2;
+        min-height: 60vh;
+      }
+
+      .right-panel {
+        width: 100%;
+        height: 40vh; /* Adjusted for better visibility */
+        min-height: 300px;
+        order: 1;
+      }
+
+      .mountain-img {
+        height: 100%;
+        object-fit: contain;
       }
 
       .stickman {
-        left: 5% !important;
-        bottom: 8% !important;
+        left: 10%;
+        bottom: 10%;
+        width: 10%;
+      }
+
+      .coin {
         width: 8%;
       }
       
+      /* Adjust coin positions for portrait */
+      .coin1 {
+        top: 60%;
+        left: 35%;
+      }
+      
+      .coin2 {
+        top: 70%;
+        left: 20%;
+      }
+      
+      /* Adjust cloud positions */
+      .cloud1 {
+        top: 10%;
+        width: 30%;
+      }
+      
+      .cloud2 {
+        top: 5%;
+        width: 10%;
+      }
+      
+      .cloudBig {
+        top: 70%;
+        width: 80%;
+      }
+    }
+    
+    /* Additional media query for very small screens */
+    @media (max-width: 480px) {
+      .right-panel {
+        height: 35vh;
+      }
+      
+      .stickman {
+        width: 12%;
+      }
+      
       .coin {
-        width: 8%;
+        width: 10%;
+      }
+      
+      .header {
+        padding: 10px 15px;
+        flex-wrap: wrap;
+      }
+      
+      .header .nav-links {
+        gap: 10px;
+        font-size: 14px;
+      }
+      
+      .logo-img {
+        width: 50px;
       }
     }
   </style>
@@ -286,9 +345,7 @@
       <button class="submit-btn" id="submit-btn">Submit</button>
       <button class="submit-btn" id="hint-btn">💡 Hint</button>
       <div id="hint-box" style="margin-top: 15px; font-style: italic; color: #333;"></div>
-
     </div>
-
 
     <div class="right-panel">
       <img src="mountains3.PNG" alt="Mountain" class="mountain-img" />
@@ -301,7 +358,7 @@
     </div>
   </div>  
 
-   <script>
+  <script>
     const coins = document.querySelectorAll('.coin');
     const submitBtn = document.getElementById('submit-btn');
     const hintBtn = document.getElementById('hint-btn');
@@ -316,18 +373,18 @@
         question: "Which of the following is NOT a fundamental principle of human rights?",
         options: ["Universality", "Inalienability", "Indivisibility", "Profitability"],
         correctIndex: 3,
-        hint: "When considering the fundamental principles of human rights, it's important to recall that these principles are generally accepted across cultures and societies. One helpful hint would be to eliminate the option that seems least related to the inherent rights, freedoms, and dignity of all individuals, without discrimination. This should lead you to the principle that is not a fundamental human right."
+        hint: "Eliminate the one that sounds more like a business goal than a basic right."
       },
       {
-        question: "Which one of the following is NOT considered a best practice for a company that is working to prevent child labor?",
+        question: "Which one is NOT a best practice to prevent child labor?",
         options: [
-          "Follow national labor laws on minimum age and adhere to international standards where necessary.",
-          "Use adequate and verifiable mechanisms for age verification during recruitment.",
-          "Do not maintain accurate and up-to-date records of all employees.",
-          "Influence subcontractors, suppliers, and other business partners to combat child labor."
+          "Follow national labor laws.",
+          "Use age verification methods.",
+          "Don't maintain employee records.",
+          "Influence partners to prevent child labor."
         ],
         correctIndex: 2,
-        hint: "One helpful hint could be: Consider the option that is not directly related to implementing stricter policies or regulations within the company itself. Remember, the focus is on preventing child labor."
+        hint: "Which one sounds like something a careless company would do?"
       },
       {
         question: "What is the primary purpose of the Universal Declaration of Human Rights?",
@@ -338,7 +395,7 @@
           "To replace all national laws with international standards"
         ],
         correctIndex: 1,
-        hint: "The primary purpose of the Universal Declaration of Human Rights is to outline and establish fundamental human rights to be universally protected and promoted, ensuring dignity, equality, and freedom for all individuals, regardless of their nationality, gender, ethnicity, religion, or any other status."
+        hint: "Focus on the answer that talks about equality and global rights."
       }
     ];
 
@@ -346,9 +403,13 @@
     let selectedIndex = -1;
     let correctAnswers = 0;
 
-    // Movement percentages based on viewport width/height
-    const movements = [
-      { x: 8, y: 25 },  // 7% of viewport width, 15% of viewport height
+    // Adjusted movements for mobile portrait
+    const movements = window.innerWidth <= 768 ? [
+      { x: 15, y: 15 },
+      { x: 12, y: 10 },
+      { x: 13, y: 12 }
+    ] : [
+      { x: 8, y: 25 },
       { x: 7.5, y: 15 },
       { x: 8.5, y: 17 }
     ];
@@ -361,10 +422,7 @@
       q.options.forEach((option, index) => {
         const optionElement = document.createElement('label');
         optionElement.className = 'option';
-        optionElement.innerHTML = `
-          <input type="radio" name="q" value="${index}" />
-          ${option}
-        `;
+        optionElement.innerHTML = `<input type="radio" name="q" value="${index}" />${option}`;
         optionsElement.appendChild(optionElement);
       });
       selectedIndex = -1;
@@ -390,8 +448,6 @@
         return;
       }
 
-      hintBox.innerText = "";
-
       const isCorrect = selectedIndex === questions[currentQuestion].correctIndex;
 
       if (isCorrect) {
@@ -404,26 +460,16 @@
           const currentBottom = parseFloat(getComputedStyle(stickman).bottom);
           
           // Calculate movement based on viewport width/height
-          const viewportWidth = window.innerWidth;
-          const viewportHeight = window.innerHeight;
-          const moveX = (move.x / 100) * viewportWidth;
-          const moveY = (move.y / 100) * viewportHeight;
+          const moveX = (move.x / 100) * window.innerWidth;
+          const moveY = (move.y / 100) * window.innerHeight;
           
           stickman.style.left = `${currentLeft + moveX}px`;
           stickman.style.bottom = `${currentBottom + moveY}px`;
         }
 
         setTimeout(() => {
-          if (correctAnswers === 2) {
-            const coin2 = document.querySelector('.coin2');
-            coin2.style.transition = "top 1s ease";
-            coin2.style.top = "52%";
-          }
-          if (correctAnswers === 3) {
-            const coin1 = document.querySelector('.coin1');
-            coin1.style.transition = "top 1s ease";
-            coin1.style.top = "38%";
-          }
+          if (correctAnswers === 2) document.querySelector('.coin2').style.top = window.innerWidth <= 768 ? "45%" : "52%";
+          if (correctAnswers === 3) document.querySelector('.coin1').style.top = window.innerWidth <= 768 ? "30%" : "38%";
         }, 1000);
 
         currentQuestion++;
@@ -439,9 +485,7 @@
         }
       } else {
         stickman.src = "stickmanRed.png";
-        setTimeout(() => {
-          alert("Oops! That's not the correct answer. Please try again.");
-        }, 300);
+        setTimeout(() => alert("Oops! That's not the correct answer. Try again."), 300);
       }
     });
 
@@ -449,10 +493,18 @@
       hintBox.innerText = questions[currentQuestion].hint;
     });
 
-    // Initialize stickman position
     window.addEventListener('load', () => {
       stickman.style.left = '10%';
       stickman.style.bottom = '10%';
+    });
+
+    // Adjust for orientation changes
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        // Reset stickman position when switching to portrait
+        stickman.style.left = '10%';
+        stickman.style.bottom = '10%';
+      }
     });
 
     loadQuestion();
