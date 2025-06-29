@@ -225,7 +225,7 @@
       animation: coinJump 1s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 768px) and (orientation: portrait) {
       .main {
         flex-direction: column;
         height: auto;
@@ -291,13 +291,14 @@
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 480px) and (orientation: portrait) {
       .right-panel {
         height: 35vh;
       }
       
       .stickman {
         width: 15%;
+        bottom: 20% !important;
       }
       
       .coin {
@@ -405,14 +406,14 @@
     let selectedIndex = -1;
     let correctAnswers = 0;
 
-    // Check if mobile
-    const isMobile = window.innerWidth <= 768;
+    // Check if mobile portrait
+    const isMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
     
-    // Movement values - different for mobile
-    const movements = isMobile ? [
-      { x: 15, y: 8 },   // Smaller vertical movement for mobile
-      { x: 12, y: 6 },
-      { x: 13, y: 7 }
+    // Movement values - different for mobile portrait
+    const movements = isMobilePortrait ? [
+      { x: 25, y: 5 },   // More horizontal, less vertical movement for mobile portrait
+      { x: 20, y: 4 },
+      { x: 22, y: 6 }
     ] : [
       { x: 8, y: 25 },
       { x: 7.5, y: 15 },
@@ -433,10 +434,10 @@
       selectedIndex = -1;
       stickman.src = "stickman.png";
       
-      // Reset position for mobile
-      if (isMobile) {
+      // Reset position for mobile portrait
+      if (isMobilePortrait) {
         stickman.style.left = '15%';
-        stickman.style.bottom = '15%';
+        stickman.style.bottom = '20%';
         document.querySelector('.coin1').style.top = '55%';
         document.querySelector('.coin1').style.left = '40%';
         document.querySelector('.coin2').style.top = '65%';
@@ -484,10 +485,10 @@
 
         setTimeout(() => {
           if (correctAnswers === 2) {
-            document.querySelector('.coin2').style.top = isMobile ? "45%" : "52%";
+            document.querySelector('.coin2').style.top = isMobilePortrait ? "45%" : "52%";
           }
           if (correctAnswers === 3) {
-            document.querySelector('.coin1').style.top = isMobile ? "30%" : "38%";
+            document.querySelector('.coin1').style.top = isMobilePortrait ? "30%" : "38%";
           }
         }, 1000);
 
@@ -513,9 +514,9 @@
     });
 
     window.addEventListener('load', () => {
-      if (isMobile) {
+      if (isMobilePortrait) {
         stickman.style.left = '15%';
-        stickman.style.bottom = '15%';
+        stickman.style.bottom = '20%';
         document.querySelector('.coin1').style.top = '55%';
         document.querySelector('.coin1').style.left = '40%';
         document.querySelector('.coin2').style.top = '65%';
@@ -528,8 +529,8 @@
 
     // Handle screen rotation
     window.addEventListener('resize', () => {
-      const nowMobile = window.innerWidth <= 768;
-      if (nowMobile !== isMobile) {
+      const nowMobilePortrait = window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+      if (nowMobilePortrait !== isMobilePortrait) {
         location.reload(); // Reload when orientation changes
       }
     });
