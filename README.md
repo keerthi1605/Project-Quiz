@@ -8,7 +8,7 @@ It tests your knowledge, shows your score, and lets you restart the quiz – all
 
 ##  Live Demo
 
- [Play the Quiz](https://keerthi1605.github.io/Project-Quiz/)
+ [Play the Quiz](https://keerthi1605.github.io/Project-Quiz/sample2)
 
 ---
 
